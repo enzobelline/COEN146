@@ -1,0 +1,46 @@
+/*
+# Name: Laurence Kim
+# Date: 04/01/21
+# Title: Lab1
+# Description: This program enables multithreading
+*/
+
+/*
+int pthread_create(pthread_t *thread, pthread_attr_t *attr,
+ void *(*start_routine) (void *arg), void *arg);
+*/
+
+/*Sample C program for Lab assignment 1*/
+#include <stdio.h> /* printf, stderr */
+#include <sys/types.h> /* pid_t */
+#include <unistd.h> /* fork */
+#include <stdlib.h> /* atoi */
+#include <errno.h>  /* errno */
+#include <pthread.h>/* threlsad */
+
+void *start_routine (void *n){
+    int i;
+    for (i = 0; i < 100; ++i){
+		printf("\t\t\t\t Thread Created%d\n", i);
+		usleep(*((int *)n));
+    }
+}
+
+/* main function with command-line arguments to pass */
+int main(int argc, char *argv[]) {
+	pthread_t tid;
+	int i, n = atoi(argv[1]); // n microseconds to input from keyboard for delay
+	printf("\n Before multithreading.\n");
+	pthread_create(&tid, NULL, start_routine, &n);
+
+	if (tid == -1) {
+		fprintf(stderr, "can't thread, error %d\n", errno);
+	}
+	pthread_join(tid, NULL);
+	return 0;
+}
+
+/*
+Step 3. The program does not run because we are missing a delay specification.
+Step 4. For 500us, the parent process falls behind the child process due to the fork before the loop. For 5000us, the parent process alernates print messages with the child process.
+*/
